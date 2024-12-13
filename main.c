@@ -2,11 +2,17 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <spawn.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 void loop ();
 char *gatherInput();
 char **parse (char *ogLine);
-void execute ();
+int execute (char **args);
+
+extern char **environ;
 
 //main
 int main (int argc, char *argv) {
@@ -30,6 +36,7 @@ void loop () {
 
 		userInput = gatherInput();
 		executeArgs = parse(userInput);
+		executeStatus = execute(executeArgs);
 
 
 		if (!executeStatus) {
@@ -164,9 +171,26 @@ char **parse (char *ogLine) {
 	return args;
 };
 
-// exexute parsed user input
-void execute () {
+// execte parsed user input
+int execute(char **args) {
 
+	pid_t pid;
+	int processStatus;
+	int status;
 
+	char *temp = malloc(6 + sizeof(args[0]));
+	strcpy(temp, "/bin/");
+	strcat(temp, args[0]);
 
+	if (posix_spawn(&pid, temp, NULL, NULL, args, environ) != 0) {
+		printf("Process Spawn Failed");
+		exit(EXIT_FAILURE);
+	}
+
+	if (waitpid(pid, &status, 0) == -1) {
+		printf("Process Wait Failed");
+		exit(EXIT_FAILURE);
+	}
+
+	return WIFEXITED(status);
 };
