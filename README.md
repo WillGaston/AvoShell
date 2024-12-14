@@ -40,7 +40,5 @@ AvoShell is a hobbyist shell that I am currently working on as a side project.
 
 Functinality I aim to complete:
 
-- [ ] File/Directory Creation
-- [ ] File execution
-- [ ] File and directory traversal
-- [ ]  more to come
+- [ ] File/Directory Creation/execution/traversal
+- [ ] Singapore Functionality: weather/exchange/flights
